@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const problems = [
   {
@@ -44,6 +45,7 @@ const problems = [
   },
 ];
 export default function Home() {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [userData, setUserData] = useState(null); // For storing user data
   const [loading, setLoading] = useState(true); // For loading state
@@ -53,6 +55,17 @@ export default function Home() {
     console.log(`Navigating to problem ${problemId}`);
     // In a real application, you would typically use a router to navigate to the problem page
     // For example: history.push(`/problem/${problemId}`)
+  };
+
+  const handleLogOut = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+
+    // Optionally, you can notify the server of the logout, if needed
+    // await fetch('/api/logout', { method: 'POST' });
+
+    // Redirect to the login page
+    navigate("/login");
   };
   useEffect(() => {
     // Get the userId from localStorage
@@ -88,7 +101,7 @@ export default function Home() {
     }
   }, []);
   if (loading) {
-    return <p>Loading...</p>; // Show a loading message
+    return <p className="mx-auto text-purple-800 ">Loading...</p>; // Show a loading message
   }
 
   if (error) {
@@ -110,7 +123,7 @@ export default function Home() {
             </div>
             <div className="hidden md:flex items-center">
               <span className="text-white mr-4">{userData.username}</span>
-              <button className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-purple-800 focus:outline-none transition">
+              <button onClick={handleLogOut} className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-purple-800 focus:outline-none transition">
                 <FaSignOutAlt className="h-5 w-5 mr-2" />
                 Log out
               </button>
@@ -135,7 +148,10 @@ export default function Home() {
               <span className="block px-3 py-2 text-base font-medium text-white">
                 namish
               </span>
-              <button className="block w-full text-left px-3 py-2 text-base font-medium text-white hover:text-gray-900 hover:bg-gray-50">
+              <button
+                onClick={handleLogOut}
+                className="block w-full text-left px-3 py-2 text-base font-medium text-white hover:text-gray-900 hover:bg-gray-50"
+              >
                 <FaSignOutAlt className="inline-block h-5 w-5 mr-2" />
                 Log out
               </button>
