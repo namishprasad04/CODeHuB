@@ -1,19 +1,42 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+// Import the optimized login function
 import { login } from "../services/api";
-import { Link } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
     try {
-      const response = await login(email, password);
-      console.log(response);
-      // Handle successful login (e.g., save token, redirect)
+      // Basic client-side validation
+      if (!email || !password) {
+        throw new Error("Email and password are required");
+      }
+
+      const response = await login(email, password);    
+      console.log(response)  
+      // Assuming the API returns a token
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("userId", response.user.id);
+        navigate("/home");
+      } else {
+        throw new Error("Login successful, but no token received");
+      }
     } catch (error) {
       console.error("Login failed:", error);
+      setError(error.message || "Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -52,7 +75,7 @@ function Login() {
                   <img
                     className="w-auto h-7 sm:h-8"
                     src="https://res.cloudinary.com/namish/image/upload/v1727594167/codehub-high-resolution-logo-transparent_sbguh0.png"
-                    alt=""
+                    alt="Logo"
                   />
                 </div>
 
@@ -62,6 +85,11 @@ function Login() {
               </div>
 
               <div className="mt-8">
+                {error && (
+                  <div className="mb-4 text-sm text-red-600 dark:text-red-400">
+                    {error}
+                  </div>
+                )}
                 <form onSubmit={handleSubmit}>
                   <div>
                     <label
@@ -113,9 +141,10 @@ function Login() {
                   <div className="mt-6">
                     <button
                       type="submit"
-                      className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-300 transform bg-purple-700 rounded-lg hover:bg-purple-900 focus:outline-none focus:bg-blue-400 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+                      disabled={isLoading}
+                      className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-300 transform bg-purple-700 rounded-lg hover:bg-purple-900 focus:outline-none focus:bg-blue-400 focus:ring focus:ring-blue-300 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      Sign in
+                      {isLoading ? "Signing in..." : "Sign in"}
                     </button>
                   </div>
                 </form>
