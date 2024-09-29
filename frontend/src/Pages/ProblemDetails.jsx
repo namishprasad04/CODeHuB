@@ -176,7 +176,7 @@ Memory used: 5.2 MB`);
                     className={`flex items-center px-4 py-2 rounded ${
                       isRunning
                         ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-green-500 hover:bg-green-600 text-white"
+                        : "bg-purple-500 hover:bg-purple-600 text-white"
                     }`}
                   >
                     <FaPlay className="mr-2" />
