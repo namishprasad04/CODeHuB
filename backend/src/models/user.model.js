@@ -21,6 +21,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    score: {
+      type: Number,
+      default: 0, // Default score is 0
+    },
   },
   { timestamps: true }
 );
@@ -33,6 +37,11 @@ userSchema.pre("save", async function (next) {
 
 userSchema.methods.comparedPasswords = async function (userPassword) {
   return bcrypt.compare(userPassword, this.password);
+};
+
+userSchema.methods.updateScore = async function (points) {
+  this.score += points;
+  await this.save();
 };
 
 const User = mongoose.model("User", userSchema);

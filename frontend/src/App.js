@@ -30,6 +30,14 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/problem/:id"
+          element={
+            <ProtectedRoute>
+              <ProblemDetails />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>

@@ -7,4 +7,4 @@ router.post("/register", register);
 router.post("/login", login);
 router.get("/get-user/:id", getUser);
 
-export default router;
+export { router };

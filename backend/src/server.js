@@ -2,8 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import router from "./routes/auth.route.js";
-
+import { router as authRoute } from "./routes/auth.route.js";
+import { router as problemRoute } from "./routes/problem.route.js";
 dotenv.config();
 
 const app = express();
@@ -16,7 +16,8 @@ mongoose
   .then(() => console.log("MongoDB connected!"))
   .catch((err) => console.log("MongoDB connection err:", err));
 
-app.use("/api/auth", router);
+app.use("/api/auth", authRoute);
+app.use("/api/problems", problemRoute);
 
 const PORT = process.env.PORT;
 
