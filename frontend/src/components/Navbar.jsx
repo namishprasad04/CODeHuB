@@ -52,6 +52,7 @@ export default function Navbar() {
   const handleLogOut = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userId");
+    localStorage.removeItem("score");
 
     // Optionally, you can notify the server of the logout, if needed
     // await fetch('/api/logout', { method: 'POST' });
@@ -77,6 +78,9 @@ export default function Navbar() {
           </div>
           <div className="hidden md:flex items-center">
             <span className="text-white mr-4">{userData.username}</span>
+            <span className="text-blue-500 font-semibold mr-4">
+              Score:{userData.score}
+            </span>
             <button
               onClick={handleLogOut}
               className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-purple-800 focus:outline-none transition"
@@ -102,8 +106,11 @@ export default function Navbar() {
       {isMenuOpen && (
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <span className="block px-3 py-2 text-base font-medium text-white">
-              namish
+            <span className="block px-3 py-2 text-base font-semibold text-white">
+              {userData.username}
+            </span>
+            <span className="text-blue-500 px-3 py-2 font-semibold">
+              Score:{userData.score}
             </span>
             <button
               onClick={handleLogOut}

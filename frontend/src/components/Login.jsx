@@ -22,12 +22,12 @@ function Login() {
         throw new Error("Email and password are required");
       }
 
-      const response = await login(email, password);    
-      console.log(response)  
+      const response = await login(email, password);
       // Assuming the API returns a token
       if (response.token) {
         localStorage.setItem("token", response.token);
         localStorage.setItem("userId", response.user.id);
+        localStorage.setItem("score", response.user.score);
         navigate("/home");
       } else {
         throw new Error("Login successful, but no token received");
