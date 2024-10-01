@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { router as authRoute } from "./routes/auth.route.js";
 import { router as problemRoute } from "./routes/problem.route.js";
+import { router as codeRoutes } from "./routes/submitCode.route.js";
 dotenv.config();
 
 const app = express();
@@ -18,6 +19,7 @@ mongoose
 
 app.use("/api/auth", authRoute);
 app.use("/api/problems", problemRoute);
+app.use("/api/code", codeRoutes);
 
 const PORT = process.env.PORT;
 
