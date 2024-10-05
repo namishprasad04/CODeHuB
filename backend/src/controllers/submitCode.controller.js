@@ -20,16 +20,24 @@ export const runTestCases = async (req, res) => {
 
   try {
     const results = await Promise.all(problem.testCases.map(async (testCase, index) => {
-      const output = await executeCode(code, language, testCase.input);
-      const passed = output.trim() === testCase.output;
-      return { testCase: index + 1, passed, output, expected: testCase.output };
+      console.log(testCase)
+      const input = `${testCase.input}`; 
+      const output = await executeCode(code, language, input);
+      const expectedOutput = JSON.stringify(testCase.output);
+      const passed = output.trim() === expectedOutput;
+      return {
+        testCase: index + 1,
+        passed,
+        input: `${testCase.input}, ${testCase.target}`,
+        output: output.trim(),
+        expected: expectedOutput
+      };
     }));
     res.json(results);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.toString() });
   }
 };
-
 export const submitSolution = async (req, res) => {
   const { code, language } = req.body;
   const problem = await Problem.findById(req.params.id);

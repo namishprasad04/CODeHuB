@@ -14,6 +14,7 @@ export default function ProblemDetails() {
   const [output, setOutput] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [allTestsPassed, setAllTestsPassed] = useState(false);
 
   // Function to fetch problem details from the server using fetch
   const fetchProblem = async () => {
@@ -84,10 +85,33 @@ export default function ProblemDetails() {
         }
       );
       const result = await response.json();
-      setOutput(JSON.stringify(result, null, 2));
-      toast.success("Test cases completed", { id: loadingToast });
+      
+      console.log("Test cases result:", result); // Log the result for debugging
+  
+      if (!Array.isArray(result)) {
+        throw new Error("Unexpected response format from server");
+      }
+  
+      const allPassed = result.every(testCase => testCase.passed);
+      setAllTestsPassed(allPassed);
+      
+      if (allPassed) {
+        setOutput("All test cases passed successfully!");
+        toast.success("All test cases passed!", { id: loadingToast });
+      } else {
+        const failedTests = result.filter(testCase => !testCase.passed).length;
+        const resultOutput = result.map(testCase => 
+          `Test Case ${testCase.testCase}: ${testCase.passed ? 'Passed' : 'Failed'}\n` +
+          `Input: ${testCase.input}\n` +
+          `Your Output: ${testCase.output}\n` +
+          `Expected Output: ${testCase.expected}\n`
+        ).join('\n');
+        setOutput(`${failedTests} test case(s) failed. Please check your code and try again.\n\n${resultOutput}`);
+        toast.error(`${failedTests} test case(s) failed`, { id: loadingToast });
+      }
     } catch (error) {
-      setOutput("Error running test cases: " + error.message);
+      console.error("Error in runTestCases:", error);
+      setOutput(`Error running test cases: ${error.message}`);
       toast.error("Error running test cases", { id: loadingToast });
     }
   };
@@ -106,8 +130,15 @@ export default function ProblemDetails() {
         }
       );
       const result = await response.json();
-      setOutput(JSON.stringify(result, null, 2));
-      toast.success("Solution submitted successfully", { id: loadingToast });
+      if (result.success) {
+        setOutput("Congratulations! Your solution has been accepted.");
+        toast.success("Solution accepted!", { id: loadingToast });
+      } else {
+        setOutput(
+          "Your solution did not pass all test cases. Please try again."
+        );
+        toast.error("Solution not accepted", { id: loadingToast });
+      }
     } catch (error) {
       setOutput("Error submitting solution: " + error.message);
       toast.error("Error submitting solution", { id: loadingToast });
@@ -235,7 +266,12 @@ export default function ProblemDetails() {
                   </button>
                   <button
                     onClick={submitSolution}
-                    className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600"
+                    disabled={!allTestsPassed}
+                    className={`px-4 py-2 text-white rounded-md ${
+                      allTestsPassed
+                        ? "bg-purple-500 hover:bg-purple-600"
+                        : "bg-gray-400 cursor-not-allowed"
+                    }`}
                   >
                     Submit Solution
                   </button>
@@ -254,72 +290,3 @@ export default function ProblemDetails() {
     </>
   );
 }
-
-// useEffect(() => {
-//   const loadProblem = async () => {
-//     setIsLoading(true);
-//     try {
-//       const data = await fetchProblem(id);
-//       setProblem(data);
-//       setCode(data.initialCode[language]);
-//     } catch (error) {
-//       console.error("Error fetching problem:", error);
-//       setOutput("Error: " + error.message);
-//     } finally {
-//       setIsLoading(false);
-//     }
-//   };
-//   loadProblem();
-// }, [id, language]);
-
-// const handleLanguageChange = (newLanguage) => {
-//   setLanguage(newLanguage);
-//   setCode(problem.initialCode[newLanguage]);
-// };
-
-// const handleCodeChange = (newCode) => {
-//   setCode(newCode);
-// };
-
-// const languageOptions = [
-//   { value: "javascript", label: "JavaScript", id: 63 },
-//   { value: "python", label: "Python", id: 71 },
-//   { value: "java", label: "Java", id: 62 },
-//   { value: "cpp", label: "C++", id: 53 },
-// ];
-
-// const handleSubmit = async () => {
-//   if (status !== "Accepted") {
-//     alert("Code not accepted, you cannot submit.");
-//     return;
-//   }
-
-//   // Retrieve userId from localStorage
-//   const userId = localStorage.getItem("userId");
-//   if (!userId) {
-//     alert("User ID not found. Please log in.");
-//     return;
-//   }
-
-//   try {
-//     // Pass userId to the submitCode function
-//     const result = await submitCode(userId, status);
-//     alert(result.message);
-//     navigate(-1);
-//   } catch (error) {
-//     console.error("Error:", error);
-//     alert("Failed to submit code");
-//   }
-// };
-
-// const [problem, setProblem] = useState(null);
-// const [language, setLanguage] = useState("javascript");
-// const [code, setCode] = useState("");
-// const [output, setOutput] = useState("");
-// const [isRunning, setIsRunning] = useState(false);
-// const [isLoading, setIsLoading] = useState(true);
-// const [status, setStatus] = useState(null);
-// const { id } = useParams();
-
-// if (isLoading) return <div>Loading...</div>;
-// if (!problem) return <div>Problem not found</div>;
