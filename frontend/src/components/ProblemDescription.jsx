@@ -21,14 +21,13 @@ export default function ProblemDescription({ problem }) {
         </span>
       </div>
       <div className="mb-4">
-        <h3 className="font-semibold">Examples:</h3>
         {problem.examples.map((example, index) => (
           <div key={index} className="mt-2">
             <h4 className="font-medium">Example {index + 1}:</h4>
             <pre className="bg-gray-100 p-2 rounded text-sm whitespace-pre-wrap">
-              Input: {JSON.stringify(example.input)}
+              Input: {example.input}
               <br />
-              Output: {JSON.stringify(example.output)}
+              Output: {example.output}
               <br />
               {example.explanation && (
                 <span>Explanation: {example.explanation}</span>

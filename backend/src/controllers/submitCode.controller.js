@@ -1,35 +1,51 @@
-import User from "../models/user.model.js";
+import { executeCode } from "../services/codeExecutionService.js";
+import Problem from "../models/problem.model.js";
 
-// Controller for handling code submission
-export const submitCode = async (req, res) => {
+export const runCode = async (req, res) => {
+  const { code, language, input } = req.body;
   try {
-    const { id, status } = req.body; // Assuming you're sending userId and the status of the submission
-
-    // Find the user by their ID (Mongoose will handle ObjectId conversion)
-    const user = await User.findById(id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Check if the code status is "Accepted"
-    if (status.toLowerCase() === "accepted") {
-      const points = 100; // Points for solving the problem
-
-      // Update user's score directly
-      user.score += points;
-      await user.save(); // Save the updated score in the database
-
-      return res.status(200).json({
-        message: "Code accepted, score updated!",
-        score: user.score,
-      });
-    } else {
-      return res.status(200).json({
-        message: "Code not accepted, no score change",
-      });
-    }
+    const output = await executeCode(code, language, input);
+    res.json({ output });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const runTestCases = async (req, res) => {
+  const { code, language } = req.body;
+  const problem = await Problem.findById(req.params.id);
+  if (!problem) {
+    return res.status(404).json({ error: 'Problem not found' });
+  }
+
+  try {
+    const results = await Promise.all(problem.testCases.map(async (testCase, index) => {
+      const output = await executeCode(code, language, testCase.input);
+      const passed = output.trim() === testCase.output;
+      return { testCase: index + 1, passed, output, expected: testCase.output };
+    }));
+    res.json(results);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const submitSolution = async (req, res) => {
+  const { code, language } = req.body;
+  const problem = await Problem.findById(req.params.id);
+  if (!problem) {
+    return res.status(404).json({ error: 'Problem not found' });
+  }
+
+  try {
+    const results = await Promise.all(problem.testCases.map(async (testCase, index) => {
+      const output = await executeCode(code, language, testCase.input);
+      const passed = output.trim() === testCase.output;
+      return { testCase: index + 1, passed };
+    }));
+    const allPassed = results.every(result => result.passed);
+    res.json({ success: allPassed, results });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };

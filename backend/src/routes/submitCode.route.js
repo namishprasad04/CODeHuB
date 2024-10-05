@@ -1,9 +1,10 @@
 import express from "express";
-import { submitCode } from "../controllers/submitCode.controller.js";
+import { runCode, runTestCases, submitSolution } from "../controllers/submitCode.controller.js";
 
 const router = express.Router();
 
-// POST route to handle code submission
-router.post("/submit",submitCode);
+router.post("/run", runCode);
+router.post("/test/:id", runTestCases);
+router.post("/submit/:id", submitSolution);
 
 export { router };

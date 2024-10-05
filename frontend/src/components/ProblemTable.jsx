@@ -12,8 +12,8 @@ export default function ProblemTable({ problems, onSolve }) {
       <table className="min-w-full divide-y divide-gray-200">
         <ProblemTableHeader />
         <tbody className="bg-white divide-y divide-gray-200">
-          {problems.map((problem) => (
-            <ProblemTableRow key={problem._id} problem={problem} onSolve={onSolve} />
+          {problems.map((problem,i) => (
+            <ProblemTableRow key={problem._id} problem={problem} i={i+1} onSolve={onSolve} />
           ))}
         </tbody>
       </table>

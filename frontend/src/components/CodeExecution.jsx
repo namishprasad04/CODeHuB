@@ -1,12 +1,6 @@
 import React from "react";
 import { FaCheck, FaPlay, FaStopCircle } from "react-icons/fa";
 
-const languageOptions = [
-  { value: "javascript", label: "JavaScript", id: 63 },
-  { value: "python", label: "Python", id: 71 },
-  { value: "java", label: "Java", id: 62 },
-  { value: "cpp", label: "C++", id: 53 },
-];
 
 export default function CodeExecution({
   code,
@@ -18,6 +12,7 @@ export default function CodeExecution({
   setStatus,
   onSubmit,
   status,
+  languageOptions
 }) {
   const handleRunCode = async () => {
     setIsRunning(true);
@@ -30,7 +25,7 @@ export default function CodeExecution({
     const submissionData = {
       source_code: code,
       language_id: selectedLanguage.id,
-      stdin: "",
+      stdin: {"nums":[2,7,11,15],"target":9},
     };
 
     try {
@@ -49,7 +44,9 @@ export default function CodeExecution({
       );
 
       const result = await response.json();
+      console.log(result)
       const { stdout, stderr, compile_output, status } = result;
+      console.log(stdout, stderr, compile_output, status)
 
       if (stdout) {
         setOutput(`Output:\n${stdout}`);

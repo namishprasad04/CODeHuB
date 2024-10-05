@@ -1,13 +1,13 @@
 import React from "react";
 import DifficultyBadge from "./DifficultyBadge";
 
-export default function ProblemTableRow({ problem, onSolve }) {
+export default function ProblemTableRow({ problem, onSolve,i }) {
   return (
     <tr>
       <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-        {problem._id}
+        {i}
       </td>
-      <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500">
+      <td className="px-3 py-4 whitespace-nowrap text-md text-gray-900 font-semibold">
         {problem.name}
       </td>
       <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">

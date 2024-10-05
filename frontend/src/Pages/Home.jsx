@@ -30,7 +30,7 @@ export default function Home() {
   };
 
   const handleSolve = (problemId) => {
-    navigate(`/problem/${problemId}`);
+    navigate(`/problems/${problemId}`);
   };
 
   return (
