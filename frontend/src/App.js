@@ -6,12 +6,10 @@ import Home from "./Pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageNotFound from "./Pages/PageNotFound";
 import ProblemDetails from "./Pages/ProblemDetails";
-import { Toaster } from "react-hot-toast";
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Toaster position="top-right" />
       <Routes>
         <Route path="/" element={<Navigate to="/register" />} />
         <Route path="/register" element={<Register />} />

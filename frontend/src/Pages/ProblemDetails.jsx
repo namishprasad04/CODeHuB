@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { FaArrowLeftLong } from "react-icons/fa6";
 import Navbar from "../components/Navbar";
 import { Editor } from "@monaco-editor/react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 export default function ProblemDetails() {
   const [problem, setProblem] = useState(null);
@@ -60,7 +62,7 @@ export default function ProblemDetails() {
   };
 
   if (!problem)
-    return <div className="container mx-auto mt-8 px-4">Loading...</div>;
+    return <LoadingSpinner/>
 
   const languageOptions = [
     { value: "javascript", label: "JavaScript" },
@@ -73,7 +75,12 @@ export default function ProblemDetails() {
       <Navbar />
       <div className="min-h-screen bg-gray-100 p-4">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold mb-6">{problem.title}</h1>
+          <div className="flex items-center gap-4">
+            <Link to="/home">
+              <FaArrowLeftLong className="mb-5 ml-2 cursor-pointer" size={25} />
+            </Link>
+            <h1 className="text-3xl font-bold mb-6">{problem.title}</h1>
+          </div>
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="w-full lg:w-1/3 bg-white p-6 rounded-lg shadow">
               <h2 className="text-xl font-semibold mb-4">

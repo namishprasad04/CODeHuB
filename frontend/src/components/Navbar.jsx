@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaBars, FaSignOutAlt, FaTimes, FaTrophy } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ export default function Navbar() {
     }
   }, []);
   if (loading) {
-    return <p className="mx-auto text-purple-800 ">Loading...</p>; // Show a loading message
+    return <LoadingSpinner/>
   }
 
   if (error) {
