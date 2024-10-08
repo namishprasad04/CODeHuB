@@ -8,7 +8,7 @@ export default function ProblemTableRow({ problem, onSolve,i }) {
         {i}
       </td>
       <td className="px-3 py-4 whitespace-nowrap text-md text-gray-900 font-semibold">
-        {problem.name}
+        {problem.title}
       </td>
       <td className="px-3 py-4 whitespace-nowrap text-sm text-gray-500 hidden sm:table-cell">
         {problem.score}

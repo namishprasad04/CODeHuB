@@ -2,10 +2,15 @@ import mongoose from "mongoose";
 
 const problemSchema = new mongoose.Schema(
   {
-    name: String,
-    description: String,
-    difficulty: String,
-    examples: [{ input: String, output: String }],
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    difficulty: { type: String, enum: ['Easy', 'Medium', 'Hard'], required: true },
+    starterCode: { type: String, required: true },
+    examples: [{
+      input: String,
+      output: String,
+      explanation: String
+    }],
     constraints: [String],
     testCases: [{ input: String, output: String }],
     score: { type: Number, default: 0 },

@@ -19,7 +19,7 @@ mongoose
 
 app.use("/api/auth", authRoute);
 app.use("/api/problems", problemRoute);
-app.use("/api/code", codeRoutes);
+app.use("/api/problem", codeRoutes);
 
 const PORT = process.env.PORT;
 
