@@ -5,14 +5,22 @@ import { Editor } from "@monaco-editor/react";
 import { Link, useParams } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 
+const LANGUAGES = {
+  javascript: { name: "JavaScript", extension: "js" },
+  python: { name: "Python", extension: "py" },
+  java: { name: "Java", extension: "java" },
+  cpp: { name: "C++", extension: "cpp" },
+  c: { name: "C", extension: "c" },
+};
+
 export default function ProblemDetails() {
   const [problem, setProblem] = useState(null);
   const [code, setCode] = useState("");
+  const [language, setLanguage] = useState("javascript");
   const [output, setOutput] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
   const { id } = useParams();
 
-  // Function to fetch problem details from the server using fetch
   useEffect(() => {
     const fetchProblem = async () => {
       try {
@@ -24,13 +32,22 @@ export default function ProblemDetails() {
         }
         const data = await response.json();
         setProblem(data);
-        setCode(data.starterCode);
+        setCode(data.starterCode[language]);
       } catch (error) {
         console.error("Error fetching problem:", error);
       }
     };
     fetchProblem();
-  }, [id]);
+  }, [id, language]);
+
+  const handleLanguageChange = (e) => {
+    const newLanguage = e.target.value;
+    setLanguage(newLanguage);
+    if (problem && problem.starterCode) {
+      const starterCode = problem.starterCode[newLanguage] || "";
+      setCode(starterCode);
+    }
+  };
 
   const handleRunCode = async () => {
     setIsRunning(true);
@@ -43,7 +60,7 @@ export default function ProblemDetails() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ code }),
+          body: JSON.stringify({ code, language }),
         }
       );
 
@@ -61,14 +78,7 @@ export default function ProblemDetails() {
     }
   };
 
-  if (!problem)
-    return <LoadingSpinner/>
-
-  const languageOptions = [
-    { value: "javascript", label: "JavaScript" },
-    { value: "python", label: "Python" },
-    { value: "java", label: "Java" },
-  ];
+  if (!problem) return <LoadingSpinner />;
 
   return (
     <>
@@ -102,7 +112,6 @@ export default function ProblemDetails() {
                 </span>
               </div>
 
-              {/* Examples */}
               <div className="mb-4">
                 {problem.examples.map((example, index) => (
                   <div key={index} className="mt-2">
@@ -118,7 +127,6 @@ export default function ProblemDetails() {
                 ))}
               </div>
 
-              {/* Constraints */}
               <div className="mb-4">
                 <h3 className="font-semibold">Constraints:</h3>
                 <ul className="list-disc list-inside">
@@ -131,25 +139,29 @@ export default function ProblemDetails() {
               </div>
             </div>
 
-            {/* Code Editor */}
             <div className="w-full lg:w-2/3 flex flex-col gap-6">
               <div className="bg-white p-6 rounded-lg shadow">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold">Code Editor</h2>
-                  <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                    {languageOptions.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
+                  <select
+                    id="language-select"
+                    value={language}
+                    onChange={handleLanguageChange}
+                    className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  >
+                    {Object.entries(LANGUAGES).map(([key, value]) => (
+                      <option key={key} value={key}>
+                        {value.name}
                       </option>
                     ))}
                   </select>
                 </div>
                 <Editor
                   height="500px"
-                  language="javascript"
+                  language={language}
                   theme="vs-dark"
                   value={code}
-                  onChange={setCode}
+                  onChange={(value) => setCode(value)}
                   options={{
                     minimap: { enabled: false },
                     fontSize: 15,
@@ -160,17 +172,18 @@ export default function ProblemDetails() {
                 <div className="flex gap-4 mt-4">
                   <button
                     onClick={handleRunCode}
-                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                    disabled={isRunning}
+                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-blue-300"
                   >
                     {isRunning ? "Running..." : "Run Code"}
                   </button>
-                  <button className="px-4 py-2 text-white bg-green-500 rounded-md">
+                  <button className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">
                     Submit Solution
                   </button>
                 </div>
               </div>
               {output && (
-                <div className="mb-4">
+                <div className="mb-4 bg-white p-6 rounded-lg shadow">
                   <h3 className="text-xl font-bold mb-2">Test Results</h3>
                   <div className="space-y-2">
                     {output.map((result, index) => (
@@ -209,96 +222,3 @@ export default function ProblemDetails() {
     </>
   );
 }
-
-// const runCode = async () => {
-//   const loadingToast = toast.loading("Running code...");
-//   try {
-//     const response = await fetch("http://localhost:5000/api/code/run", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ code, language, input: customInput }),
-//     });
-//     const result = await response.json();
-//     setOutput(result.output);
-//     toast.success("Code executed successfully", { id: loadingToast });
-//   } catch (error) {
-//     setOutput("Error running code: " + error.message);
-//     toast.error("Error running code", { id: loadingToast });
-//   }
-// };
-
-// const runTestCases = async () => {
-//   const loadingToast = toast.loading("Running test cases...");
-//   try {
-//     const response = await fetch(
-//       `http://localhost:5000/api/code/test/${id}`,
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ code, language }),
-//       }
-//     );
-//     const result = await response.json();
-
-//     console.log("Test cases result:", result); // Log the result for debugging
-
-//     if (!Array.isArray(result)) {
-//       throw new Error("Unexpected response format from server");
-//     }
-
-//     const allPassed = result.every(testCase => testCase.passed);
-//     setAllTestsPassed(allPassed);
-
-//     if (allPassed) {
-//       setOutput("All test cases passed successfully!");
-//       toast.success("All test cases passed!", { id: loadingToast });
-//     } else {
-//       const failedTests = result.filter(testCase => !testCase.passed).length;
-//       const resultOutput = result.map(testCase =>
-//         `Test Case ${testCase.testCase}: ${testCase.passed ? 'Passed' : 'Failed'}\n` +
-//         `Input: ${testCase.input}\n` +
-//         `Your Output: ${testCase.output}\n` +
-//         `Expected Output: ${testCase.expected}\n`
-//       ).join('\n');
-//       setOutput(`${failedTests} test case(s) failed. Please check your code and try again.\n\n${resultOutput}`);
-//       toast.error(`${failedTests} test case(s) failed`, { id: loadingToast });
-//     }
-//   } catch (error) {
-//     console.error("Error in runTestCases:", error);
-//     setOutput(`Error running test cases: ${error.message}`);
-//     toast.error("Error running test cases", { id: loadingToast });
-//   }
-// };
-
-// const submitSolution = async () => {
-//   const loadingToast = toast.loading("Submitting solution...");
-//   try {
-//     const response = await fetch(
-//       `http://localhost:5000/api/code/submit/${id}`,
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ code, language }),
-//       }
-//     );
-//     const result = await response.json();
-//     if (result.success) {
-//       setOutput("Congratulations! Your solution has been accepted.");
-//       toast.success("Solution accepted!", { id: loadingToast });
-//     } else {
-//       setOutput(
-//         "Your solution did not pass all test cases. Please try again."
-//       );
-//       toast.error("Solution not accepted", { id: loadingToast });
-//     }
-//   } catch (error) {
-//     setOutput("Error submitting solution: " + error.message);
-//     toast.error("Error submitting solution", { id: loadingToast });
-//   }
-// };
