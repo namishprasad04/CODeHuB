@@ -2,15 +2,12 @@ import React, { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import Navbar from "../components/Navbar";
 import { Editor } from "@monaco-editor/react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 const LANGUAGES = {
   javascript: { name: "JavaScript", extension: "js" },
   python: { name: "Python", extension: "py" },
-  java: { name: "Java", extension: "java" },
-  cpp: { name: "C++", extension: "cpp" },
-  c: { name: "C", extension: "c" },
 };
 
 export default function ProblemDetails() {
@@ -19,7 +16,9 @@ export default function ProblemDetails() {
   const [language, setLanguage] = useState("javascript");
   const [output, setOutput] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
+  const [isAllTestsPassed, setIsAllTestsPassed] = useState(false); // New state
   const { id } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProblem = async () => {
@@ -52,6 +51,8 @@ export default function ProblemDetails() {
   const handleRunCode = async () => {
     setIsRunning(true);
     setOutput(null);
+    setIsAllTestsPassed(false); // Reset the test status when rerunning
+
     try {
       const response = await fetch(
         `http://localhost:5000/api/problem/${id}/run`,
@@ -70,11 +71,47 @@ export default function ProblemDetails() {
 
       const data = await response.json();
       setOutput(data.results);
+
+      // Check if all test cases passed
+      const allTestsPassed = data.results.every((result) => result.passed);
+      setIsAllTestsPassed(allTestsPassed); // Enable the submit button if all tests pass
     } catch (error) {
       console.error("Error running code:", error);
       setOutput([{ error: "An error occurred while running the code." }]);
     } finally {
       setIsRunning(false);
+    }
+  };
+
+  const handleSubmit = async () => {
+    const userId = localStorage.getItem("userId"); // Retrieve userId from localStorage
+
+    if (!userId) {
+      alert("You need to log in to submit a solution.");
+      return;
+    }
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/problem/${id}/submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId }), // Replace with actual user ID
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Submission failed");
+      }
+
+      navigate("/home");
+    } catch (error) {
+      console.error("Error submitting solution:", error);
+      alert(error.message);
     }
   };
 
@@ -177,7 +214,11 @@ export default function ProblemDetails() {
                   >
                     {isRunning ? "Running..." : "Run Code"}
                   </button>
-                  <button className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">
+                  <button
+                    className="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600 disabled:bg-gray-300"
+                    disabled={!isAllTestsPassed} // Disable button unless all tests pass
+                    onClick={handleSubmit}
+                  >
                     Submit Solution
                   </button>
                 </div>

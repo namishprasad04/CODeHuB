@@ -25,6 +25,12 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0, // Default score is 0
     },
+    attemptedProblems: [
+      {
+        problemId: { type: mongoose.Schema.Types.ObjectId, ref: "Problem" },
+        hasSubmitted: { type: Boolean, default: false },
+      },
+    ],
   },
   { timestamps: true }
 );

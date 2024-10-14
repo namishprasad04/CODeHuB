@@ -6,6 +6,7 @@ import Home from "./Pages/Home";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PageNotFound from "./Pages/PageNotFound";
 import ProblemDetails from "./Pages/ProblemDetails";
+import Leaderboard from "./Pages/LeaderBoard";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="/" element={<Navigate to="/register" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
         <Route
           path="/home"
           element={

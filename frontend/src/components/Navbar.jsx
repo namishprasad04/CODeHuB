@@ -44,7 +44,7 @@ export default function Navbar() {
     }
   }, []);
   if (loading) {
-    return <LoadingSpinner/>
+    return <LoadingSpinner />;
   }
 
   if (error) {
@@ -80,10 +80,12 @@ export default function Navbar() {
             <span className="text-blue-400 font-semibold">
               Score: {userData.score}
             </span>
-            <button className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-700 hover:bg-purple-800 focus:outline-none">
-              <FaTrophy className="h-4 w-4 mr-2" />
-              Leaderboards
-            </button>
+            <Link to='/leaderboard'>
+              <button className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-700 hover:bg-purple-800 focus:outline-none">
+                <FaTrophy className="h-4 w-4 mr-2" />
+                Leaderboards
+              </button>
+            </Link>
             <button
               onClick={handleLogOut}
               className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-150 ease-in-out"
@@ -118,9 +120,7 @@ export default function Navbar() {
             <div className="px-3 py-2 text-base font-medium text-blue-400">
               Score: {userData.score}
             </div>
-            <button
-              className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
-            >
+            <button className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
               <FaTrophy className="inline-block h-5 w-5 mr-2" />
               Leaderboards
             </button>

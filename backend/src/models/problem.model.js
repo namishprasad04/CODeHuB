@@ -12,9 +12,6 @@ const problemSchema = new mongoose.Schema(
     starterCode: {
       javascript: { type: String, required: true },
       python: { type: String, required: true },
-      java: { type: String, required: true },
-      c: { type: String, required: true },
-      cpp: { type: String, required: true },
     },
     constraints: [String],
     examples: [
@@ -27,6 +24,7 @@ const problemSchema = new mongoose.Schema(
     testCases: [{ input: String, output: String }],
     score: { type: Number, default: 0 },
     userTried: { type: Number, default: 0 },
+    successfulAttempts: { type: Number, default: 0 },
     successRate: { type: Number, default: 0 },
   },
   { timestamps: true }
