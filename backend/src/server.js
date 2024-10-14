@@ -25,10 +25,10 @@ app.use("/api/auth", authRoute);
 app.use("/api/problems", problemRoute);
 app.use("/api/problem", codeRoutes);
 
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+app.use(express.static(path.join(__dirname, "../../frontend/build")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+  res.sendFile(path.join(__dirname, "../../frontend/build", "index.html"));
 });
 
 const PORT = process.env.PORT;
