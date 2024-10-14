@@ -9,7 +9,7 @@ import { router as codeRoutes } from "./routes/submitCode.route.js";
 
 dotenv.config();
 
-const __dirname = path.resolve();
+const __dirname = path.resolve(path.dirname('')); 
 
 const app = express();
 
@@ -25,10 +25,10 @@ app.use("/api/auth", authRoute);
 app.use("/api/problems", problemRoute);
 app.use("/api/problem", codeRoutes);
 
-app.use(express.static(path.join(__dirname, "../../frontend/build")));
+app.use(express.static(path.resolve(__dirname, "frontend", "build")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../frontend/build", "index.html"));
+  res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
 });
 
 const PORT = process.env.PORT;
