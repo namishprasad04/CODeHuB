@@ -13,7 +13,10 @@ const __dirname = path.resolve(path.dirname(""));
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: '*', // Allow all origins
+  credentials: true // If you're dealing with authentication like cookies or tokens
+}));
 app.use(express.json());
 app.options("*", cors());
 
