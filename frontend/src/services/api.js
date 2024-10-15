@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://codehub-awtv.onrender.com/api";
 
 export const register = async (username, email, password) => {
   try {
@@ -47,7 +47,7 @@ export const login = async (email, password) => {
 };
 
 export async function fetchProblem(id) {
-  const response = await fetch(`http://localhost:5000/api/problems/${id}`);
+  const response = await fetch(`${API_URL}/problems/${id}`);
   if (!response.ok) {
     throw new Error("Problem not found");
   }

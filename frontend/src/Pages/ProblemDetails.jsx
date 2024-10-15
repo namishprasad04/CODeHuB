@@ -24,7 +24,7 @@ export default function ProblemDetails() {
     const fetchProblem = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/problems/${id}`
+          `https://codehub-awtv.onrender.com/api/problems/${id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch problem");
@@ -55,7 +55,7 @@ export default function ProblemDetails() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/problem/${id}/run`,
+        `https://codehub-awtv.onrender.com/api/problem/${id}/run`,
         {
           method: "POST",
           headers: {
@@ -92,7 +92,7 @@ export default function ProblemDetails() {
     }
     try {
       const response = await fetch(
-        `http://localhost:5000/api/problem/${id}/submit`,
+        `https://codehub-awtv.onrender.com/api/problem/${id}/submit`,
         {
           method: "POST",
           headers: {

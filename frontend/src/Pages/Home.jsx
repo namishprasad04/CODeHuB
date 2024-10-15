@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -27,7 +28,9 @@ export default function Home() {
   const fetchProblems = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/problems");
+      const response = await fetch(
+        "https://codehub-awtv.onrender.com/api/problems"
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch problems");
       }
@@ -48,7 +51,7 @@ export default function Home() {
         return;
       }
       const response = await fetch(
-        `http://localhost:5000/api/auth/get-user/${userId}`
+        `https://codehub-awtv.onrender.com/api/auth/get-user/${userId}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch user");
@@ -71,14 +74,17 @@ export default function Home() {
 
     if (difficultyFilter !== "all") {
       filtered = filtered.filter(
-        (problem) => problem.difficulty.toLowerCase() === difficultyFilter.toLowerCase()
+        (problem) =>
+          problem.difficulty.toLowerCase() === difficultyFilter.toLowerCase()
       );
     }
 
     if (solvedFilter !== "all" && user && user.attemptedProblems) {
       filtered = filtered.filter((problem) => {
         const isAttempted = user.attemptedProblems.some(
-          attemptedProblem => attemptedProblem.problemId === problem._id && attemptedProblem.hasSubmitted
+          (attemptedProblem) =>
+            attemptedProblem.problemId === problem._id &&
+            attemptedProblem.hasSubmitted
         );
         return solvedFilter === "solved" ? isAttempted : !isAttempted;
       });

@@ -19,7 +19,7 @@ export default function Navbar() {
       const fetchUserData = async () => {
         try {
           const response = await fetch(
-            `http://localhost:5000/api/auth/get-user/${userId}`
+            `https://codehub-awtv.onrender.com/api/auth/get-user/${userId}`
           ); // Call the API
 
           // Check if the response is okay
@@ -80,7 +80,7 @@ export default function Navbar() {
             <span className="text-blue-400 font-semibold">
               Score: {userData.score}
             </span>
-            <Link to='/leaderboard'>
+            <Link to="/leaderboard">
               <button className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-700 hover:bg-purple-800 focus:outline-none">
                 <FaTrophy className="h-4 w-4 mr-2" />
                 Leaderboards

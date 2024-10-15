@@ -13,12 +13,13 @@ const __dirname = path.resolve(path.dirname(""));
 
 const app = express();
 
-app.use(cors({
-  origin: '*', // Allow all origins
-  credentials: true // If you're dealing with authentication like cookies or tokens
-}));
+const corsOption = {
+  origin: "https://codehub-awtv.onrender.com",
+  credentials: true,
+};
+
 app.use(express.json());
-app.options("*", cors());
+app.use(cors(corsOption));
 
 mongoose
   .connect(process.env.MONGODB_URI)

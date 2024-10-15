@@ -14,15 +14,17 @@ export default function Leaderboard() {
   const fetchLeaderboardData = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:5000/api/auth/get-users');
+      const response = await fetch(
+        "https://codehub-awtv.onrender.com/api/auth/get-users"
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch leaderboard data');
+        throw new Error("Failed to fetch leaderboard data");
       }
       const data = await response.json();
       setLeaderboardData(data);
     } catch (error) {
-      console.error('Error fetching leaderboard data:', error);
-      setError('Failed to load leaderboard data');
+      console.error("Error fetching leaderboard data:", error);
+      setError("Failed to load leaderboard data");
     } finally {
       setIsLoading(false);
     }
