@@ -9,12 +9,13 @@ import { router as codeRoutes } from "./routes/submitCode.route.js";
 
 dotenv.config();
 
-const __dirname = path.resolve(path.dirname('')); 
+const __dirname = path.resolve(path.dirname(""));
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.options("*", cors());
 
 mongoose
   .connect(process.env.MONGODB_URI)
