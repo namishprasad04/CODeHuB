@@ -6,18 +6,24 @@ function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null); // To store error message
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null); // Clear any previous error messages
     try {
       const response = await register(username, email, password);
-      console.log(response);
-      navigate('/login')
-      // Handle successful registration (e.g., redirect to login)
-
+      if (response.error) {
+        // Check if the response contains an error and set it
+        setError(response.error.message);
+      } else {
+        // Handle successful registration
+        navigate("/login");
+      }
     } catch (error) {
-      console.error("Registration failed:", error);
+      // Display error message if registration fails
+      setError("Registration failed. Please try again.");
     }
   };
 
@@ -123,6 +129,12 @@ function Register() {
                       className="block w-full px-4 py-2 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-purple-400 dark:focus:border-purple-400 focus:ring-purple-400 focus:outline-none focus:ring focus:ring-opacity-40"
                     />
                   </div>
+
+                  {error && (
+                    <p className="mt-4 text-sm text-red-500">
+                      {error}
+                    </p>
+                  )}
 
                   <div className="mt-6">
                     <button

@@ -35,11 +35,9 @@ router.post("/:id/submit", async (req, res) => {
         hasSubmitted: true,
       });
     } else if (attemptedProblem.hasSubmitted) {
-      return res
-        .status(400)
-        .json({
-          message: "You have already submitted a solution for this problem",
-        });
+      return res.status(400).json({
+        message: "You have already submitted a solution for this problem",
+      });
     } else {
       attemptedProblem.hasSubmitted = true; // Mark as submitted
     }
@@ -67,13 +65,6 @@ router.post("/:id/submit", async (req, res) => {
     } else {
       problem.successRate = 0; // Set to 0 if userTried is 0 to avoid NaN
     }
-
-    // Log the state for debugging
-    console.log(`Problem ID: ${id}`);
-    console.log(
-      `User Tried: ${problem.userTried}, Successful Attempts: ${problem.successfulAttempts}`
-    );
-    console.log(`Calculated Success Rate: ${problem.successRate}`);
 
     // Save the user and problem after updates
     await user.save();
